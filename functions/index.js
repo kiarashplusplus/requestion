@@ -21,9 +21,10 @@ const addStickerItem = async item =>
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
 
-  getCachedResults(q).then(stickerIds =>
-    stickerIds
-      ? response.send(stickerIds)
+  // TODO: Return sticker type along with stickerIds to help front-end group them
+  getCachedResults(q).then(results =>
+    results
+      ? response.send(results)
       : generateResults(q)
           .then(items => Promise.all(items.map(item => addStickerItem(item))))
           .then(stickerIds => response.send(stickerIds))
