@@ -2,5 +2,27 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "public",
+    "cleanUrls": true,
+    "rewrites": [{
+      "source": "/ping",
+      "function": "ping"
+    },{
+      "source": "/sticker",
+      "function": "sticker"
+    },{
+      "source": "/query",
+      "function": "query"
+    }],
+    "ignore": [
+      "firebase.json",
+      "**/.md",
+      "**/node_modules/**"
+    ]
+  },
+  "functions": {
+    "source": "functions"
   }
 }
