@@ -1,14 +1,14 @@
 'use strict';
 
-const Handlebars = require('handlebars');
 const fs = require('fs');
-require.extensions['.handlebars'] = function(module, filename) {
+const Handlebars = require('handlebars');
+
+require.extensions['.handlebars'] = (module, filename) =>
   module.exports = fs.readFileSync(filename, 'utf8');
-};
-Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-  return arg1 == arg2 ? options.fn(this) : options.inverse(this);
-});
+  
 const TEMPLATES = name => require('./templates/' + name + '.handlebars');
+Handlebars.registerHelper('ifEquals', (arg1, arg2, options) => 
+  arg1 == arg2 ? options.fn(this) : options.inverse(this));
 Handlebars.registerPartial('head', TEMPLATES('head'));
 Handlebars.registerPartial('defaultMui', TEMPLATES('defaultMui'));
 
@@ -21,7 +21,7 @@ exports.template = item => {
         mui: 'default',
         title: item.title,
         snippet: item.snippet,
-        image: item.cse_image
+        image: item.image
       };
       var result = template(data);
       break;

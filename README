@@ -2,7 +2,7 @@ V0:
 For /query to return at least one type of results (i.e. `news_article`) for any query.
 
 TODO:
-* use Bing News API in results.js
+* use News API in results.js DONE
 * react-native app to show results
 * new overlay endpoint that uploads a sticker to cloudinary and returns a demo image with sticker overlay
 

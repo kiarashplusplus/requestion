@@ -63,3 +63,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.private
+functions/.runtimeconfig.json
+functions/.DS_Store
+.DS_Store

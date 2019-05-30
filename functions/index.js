@@ -3,16 +3,13 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const { makeSticker } = require('./makeSticker');
+const { getCache, setCache } = require('./utils');
 const { generateResults } = require('./results');
 
-admin.initializeApp(functions.config().firebase);
+try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
 
 const beefyOpts = { memory: '2GB', timeoutSeconds: 60 };
-
-const getCachedResults = async q =>
-  db.collection('queries').doc(q).get()
-    .then(doc => (doc.exists ? doc.data().results : null));
 
 const addStickerItem = async item =>
   db.collection('stickers').add({ input: item }).then(ref => ref.id);
@@ -20,15 +17,21 @@ const addStickerItem = async item =>
 // Initial user query
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
-
-  // TODO: Return sticker type along with stickerIds to help front-end group them
-  getCachedResults(q).then(results =>
-    results
-      ? response.send(results)
-      : generateResults(q)
-          .then(items => Promise.all(items.map(item => addStickerItem(item))))
-          .then(stickerIds => response.send(stickerIds))
-  );
+  
+  //TODO: Return sticker type along with stickerIds to help front-end group them
+  getCache("query", q)
+    .then(stickerIds =>
+      stickerIds
+        ? response.send(stickerIds)
+        : generateResults(q)
+            .then(items => Promise.all(items.map(item => addStickerItem(item))))
+            .then(stickerIds => {
+              console.log(stickerIds);
+              setCache("query", q, stickerIds);
+              return response.send(stickerIds);
+            })
+    )
+    .catch(err => response.status(500).send(err));
 });
 
 // Get sticker by providing a stickerId
