@@ -3,7 +3,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const { makeSticker } = require('./makeSticker');
-const { getCache, setCache } = require('./utils');
+const { overlay, getCache, setCache } = require('./utils');
 const { generateResults } = require('./results');
 
 try {admin.initializeApp(functions.config().firebase);} catch (e) {}
@@ -57,6 +57,11 @@ exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
       res.status(500).send(err);
     });
 });
+
+exports.overlay = functions.https.onRequest((req, res) => {
+  const stickerId = req.query.id;
+  overlay(stickerId).then(url => res.send(url));
+})
 
 exports.ping = functions.https.onRequest((req, res) => {
   res.send('ping');
