@@ -18,6 +18,9 @@
     },{
       "source": "/overlay",
       "function": "overlay"
+    },{
+      "source": "/alternatives",
+      "function": "alternatives"
     }],
     "ignore": [
       "firebase.json",
