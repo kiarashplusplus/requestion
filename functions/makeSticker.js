@@ -18,7 +18,7 @@ const makeSticker = async item => {
         const { x, y, width, height } = element.getBoundingClientRect();
         return { left: x, top: y, width, height, id: element.id };
       });
-      const padding = 1;
+      const padding = 0;
       const buffer = await page.screenshot({
         type: 'png',
         omitBackground: true,

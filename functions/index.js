@@ -4,12 +4,14 @@ const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const { makeSticker } = require('./makeSticker');
 const { overlay, getCache, setCache } = require('./utils');
-const { generateResults } = require('./results');
+const { generateNewsResults } = require('./results');
+var _ = require('lodash');
 
 try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
 
 const beefyOpts = { memory: '2GB', timeoutSeconds: 60 };
+const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
 
 const addStickerItem = async item =>
   db.collection('stickers').add({ input: item }).then(ref => ref.id);
@@ -23,13 +25,18 @@ exports.query = functions.https.onRequest(async (request, response) => {
     .then(stickerIds =>
       stickerIds
         ? response.send(stickerIds)
-        : generateResults(q)
-            .then(items => Promise.all(items.map(item => addStickerItem(item))))
-            .then(stickerIds => {
-              console.log(stickerIds);
-              setCache("query", q, stickerIds);
-              return response.send(stickerIds);
-            })
+        : generateNewsResults(q)
+        .then(items => Promise.all(items.map(item => addStickerItem(item))))
+        .then(stickerIds => {
+          console.log(stickerIds);
+          setCache("query", q, stickerIds);
+          return response.json(_.map(stickerIds, id => ({
+              image: stickerUrl + id,
+              height: 304,
+              width: 554
+            }))
+          );
+        })
     )
     .catch(err => response.status(500).send(err));
 });

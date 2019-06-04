@@ -24,7 +24,7 @@ const formatNewsAPI = data =>
         }))
         .value();
 
-const newsAPISearch = query => {
+exports.generateNewsResults = query => {
     const NewsAPI = require('newsapi');
     const KEY = functions.config().newsapi.id;
     if (!KEY) {
@@ -75,7 +75,3 @@ const bingNewsSearch = query => {
         })
     );
 }
-exports.generateResults = q => {    
-    console.log("generating results");
-    return newsAPISearch(q);
-};

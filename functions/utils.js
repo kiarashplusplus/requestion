@@ -25,7 +25,9 @@ const uploadSticker = async stickerId => {
   });
   return upload.then(image => ({
     publicId: image.public_id,
-    url: image.url
+    url: image.url,
+    width: image.width,
+    height: image.height
   }));
 };
 
