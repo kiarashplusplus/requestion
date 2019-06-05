@@ -10,7 +10,7 @@ const makeSticker = async item => {
   var screenshot = async item => {
     try {
       const page = await browser.newPage();
-      await page.setContent(template(item), { waitUntil: 'networkidle2' });
+      await page.setContent(template(item));
 
       const rect = await page.evaluate(() => {
         const element = document.querySelector('#shoot');
