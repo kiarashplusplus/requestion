@@ -12,6 +12,7 @@ var db = admin.firestore();
 
 const beefyOpts = { memory: '2GB', timeoutSeconds: 60 };
 const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
+const maxQueryResponseLength = 10;
 
 const addStickerItem = async item =>
   db.collection('stickers').add({ input: item }).then(ref => ref.id);
@@ -19,24 +20,27 @@ const addStickerItem = async item =>
 // Initial user query
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
+  console.log(`Endpoint query: ${q}`);
+  const buildResponse = stickerIds => ({
+    query: q,
+    stickers: _.map(stickerIds.slice(0, maxQueryResponseLength), id => ({
+      image: stickerUrl + id,
+      height: 304,
+      width: 554
+    }))
+  });
   
-  //TODO: Return sticker type along with stickerIds to help front-end group them
   getCache("query", q)
     .then(stickerIds =>
       stickerIds
-        ? response.send(stickerIds)
+        ? response.json(buildResponse(stickerIds))
         : generateNewsResults(q)
         .then(items => Promise.all(items.map(item => addStickerItem(item))))
         .then(stickerIds => {
           console.log(stickerIds);
           setCache("query", q, stickerIds);
-          return response.json(_.map(stickerIds, id => ({
-              image: stickerUrl + id,
-              height: 304,
-              width: 554
-            }))
-          );
-        })
+          return response.json(buildResponse(stickerIds));
+          })
     )
     .catch(err => response.status(500).send(err));
 });
