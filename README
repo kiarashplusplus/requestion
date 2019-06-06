@@ -5,6 +5,10 @@ TODO:
 * DONE use News API in results.js
 * react-native app to show results
 * DONE new overlay endpoint that uploads a sticker to cloudinary and returns a demo image with sticker overlay
+* Navigate in app to sticker details view
+* carousel for /alternatives of stickerId
+* FlatList to SectionList with 2 of the same API calls
+* /google
 
 V1:
 * extend `template.js` with more types
