@@ -2,7 +2,7 @@
 
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const { makeSticker } = require('./makeSticker');
+const { generateGoogleResults, makeSticker } = require('./makeSticker');
 const { overlay, getCache, setCache } = require('./utils');
 const { generateNewsResults } = require('./results');
 var _ = require('lodash');
@@ -17,10 +17,17 @@ const maxQueryResponseLength = 10;
 const addStickerItem = async item =>
   db.collection('stickers').add({ input: item }).then(ref => ref.id);
 
+const addStickerImage = (image, meta='') =>
+  db.collection('stickers').add({ image: image, meta: meta }).then(ref => ref.id);
+  
 // Initial user query
+// Returns list of stickerIds and sizes to start rendering serp.
+// Screenshot shouldn't block this function.
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
   console.log(`Endpoint query: ${q}`);
+
+  // Need to know sticker size before building it.
   const buildResponse = stickerIds => ({
     query: q,
     stickers: _.map(stickerIds.slice(0, maxQueryResponseLength), id => ({
@@ -45,9 +52,52 @@ exports.query = functions.https.onRequest(async (request, response) => {
     .catch(err => response.status(500).send(err));
 });
 
+// Different from /query because screenshot happens during the initial query
+// Rendering on Serp outside of the intial view.
+exports.google = functions.runWith(beefyOpts).https.onRequest(async (request, response) => {
+    const q = request.query.q;
+    console.log(`Endpoint google: ${q}`);
+
+    const buildResponse = stickers => ({
+      query: q,
+      stickers: _.map(stickers.slice(0, maxQueryResponseLength), sticker => ({
+        image: stickerUrl + sticker.id,
+        height: sticker.height,
+        width: sticker.width
+      }))
+    });
+
+    getCache("google", q)
+      .then(results =>
+        results
+          ? response.json(buildResponse(results))
+          : generateGoogleResults(q)
+              .then(items =>
+                  items.map(async item => {
+                    const id = await addStickerImage(item.image, item.meta);
+                    return {
+                    id: id,
+                    width: item.meta.width,
+                    height: item.meta.height
+                  }})
+              )
+              .then(async stickers => {
+                const results = await Promise.all(stickers);
+                console.log(results);
+                setCache("google", q, results);
+                return response.json(buildResponse(results));
+              })
+      )
+      .catch(err => response.status(500).send(err));
+  });
+
 // Get sticker by providing a stickerId
 exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
   const stickerId = req.query.id;
+  const buildResponse = b64 => ({
+    stickerId: stickerId,
+    image: b64
+  })
   var stickerRef = db.collection('stickers').doc(stickerId);
   stickerRef.get()
     .then(doc => {
@@ -56,10 +106,11 @@ exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
       } else {
         const sticker = doc.data();
         sticker.image
-          ? res.type('image/png').send(sticker.image)
+          ? res.json(buildResponse(sticker.image))
           : makeSticker(sticker.input).then(buffer => {
-              stickerRef.update({ image: buffer });
-              res.type('image/png').send(buffer);
+              let encoded = 'data:image/png;base64,' + buffer;
+              stickerRef.update({ image: encoded });
+              res.json(buildResponse(encoded));
             });
       }
     })
