@@ -43,35 +43,42 @@ exports.makeSticker = async item => {
   return screenshot(item);
 };
 
+// Not in production. Only works while running with `firebase serve`. 
 const googleStickers = async query => {
   const browser = await puppeteer.launch();
   console.log("launched pup!");
   try {
     const page = await browser.newPage();
-    console.log("before emulate");
     await page.emulate(iPhonex);
-    console.log("after emulate");
-    await page.goto('https://www.google.com/search?q='+encodeURIComponent(query));
-    const rectList = await page.evaluate(() => 
-      Array.from(document.querySelectorAll('.srg')).map(element => {
-        const { x, y, width, height } = element.getBoundingClientRect();
-        return { left: x, top: y, width, height, id: element.id };
-      })
+    await page.goto('https://www.google.com/search?q=' + encodeURIComponent(query));
+
+    // const rectList = await page.evaluate(() =>
+    //   Array.from(document.querySelectorAll("[class*='wholepage-card'],.srg,.imso-hov,g-inner-card")).map(element => {
+    //     const { x, y, width, height } = element.getBoundingClientRect();
+    //     return { left: x, top: y, width, height, id: element.id };
+    //   })
+    // );
+    // debug:
+    var rectList = [{left:0, top:0, width:370, height:650}];
+    return Promise.all(
+      _.chain(rectList)
+        .filter(rect => rect.height > 100)
+        .map(async rect => {
+          const image = await page.screenshot({
+            type: "png",
+            encoding: "base64",
+            omitBackground: true,
+            clip: {
+              x: rect.left,
+              y: rect.top,
+              width: rect.width,
+              height: rect.height
+            }
+          });
+          return { rect: rect, image: image };
+        })
+        .value()
     );
-    return Promise.all(_.map(rectList, async rect => {
-      const image = await page.screenshot({
-          type: 'png',
-          encoding: 'base64',
-          omitBackground: true,
-          clip: {
-            x: rect.left,
-            y: rect.top,
-            width: rect.width,
-            height: rect.height
-          }
-        });
-      return {rect: rect, image: image};
-    }));
   } catch (e) {
     console.log(e);
     return null;

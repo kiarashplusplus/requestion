@@ -10,7 +10,7 @@ var _ = require('lodash');
 try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
 
-const beefyOpts = { memory: '2GB', timeoutSeconds: 60 };
+const beefyOpts = { memory: '2GB', timeoutSeconds: 180 };
 const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
 const maxQueryResponseLength = 10;
 
@@ -98,6 +98,11 @@ exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
     stickerId: stickerId,
     image: b64
   })
+  const wantsHtml = req.query.html ? true : false;
+  const cachedSticker = image => wantsHtml 
+    ? res.send(`<div><img src="${image}" /></div>`) 
+    : res.json(buildResponse(image))
+
   var stickerRef = db.collection('stickers').doc(stickerId);
   stickerRef.get()
     .then(doc => {
@@ -106,7 +111,7 @@ exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
       } else {
         const sticker = doc.data();
         sticker.image
-          ? res.json(buildResponse(sticker.image))
+          ? cachedSticker(sticker.image)
           : makeSticker(sticker.input).then(buffer => {
               let encoded = 'data:image/png;base64,' + buffer;
               stickerRef.update({ image: encoded });
