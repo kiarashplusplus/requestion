@@ -20,11 +20,12 @@ const formatNewsAPI = data =>
           image: item.urlToImage,
           title: item.title,
           snippet: item.description,
-          type: "news_article"
+          redirectUrl: item.url,
+          type: "newsArticle"
         }))
         .value();
 
-exports.generateNewsResults = query => {
+exports.generateNewsResults = (query, fresh=false) => {
     const NewsAPI = require('newsapi');
     const KEY = functions.config().newsapi.id;
     if (!KEY) {
@@ -32,7 +33,7 @@ exports.generateNewsResults = query => {
     }
     const newsapi = new NewsAPI(KEY);
     return getCache('newsAPI', query)
-    .then(data => data ? formatNewsAPI(data) :
+    .then(data => (data && !fresh) ? formatNewsAPI(data) :
         newsapi.v2.everything({
             q: query,
             language: 'en',

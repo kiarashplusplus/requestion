@@ -13,9 +13,18 @@ var db = admin.firestore();
 const beefyOpts = { memory: '2GB', timeoutSeconds: 180 };
 const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
 const maxQueryResponseLength = 10;
+const newsKey = 'news';
+const defaultNewsWidth = 300;
+const defaultNewsHeight = 400;
 
 const addStickerItem = async item =>
-  db.collection('stickers').add({ input: item }).then(ref => ref.id);
+  db.collection('stickers').add({ input: item }).then(ref => ({
+    imgSrc: stickerUrl + ref.id, 
+    imgWidth: defaultNewsWidth, 
+    imgHeight: defaultNewsHeight, 
+    // key: item.type, 
+    redirectUrl: item.redirectUrl
+  }));
 
 const addStickerImage = (image, meta='') =>
   db.collection('stickers').add({ image: image, meta: meta }).then(ref => ref.id);
@@ -25,31 +34,23 @@ const addStickerImage = (image, meta='') =>
 // Screenshot shouldn't block this function.
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
+  const wantsFresh = request.query.fresh ? true : false;
   console.log(`Endpoint query: ${q}`);
 
-  // Need to know sticker size before building it.
-  const buildResponse = stickerIds => ({
+  const buildResponse = sections => ({
     query: q,
-    stickers: _.map(stickerIds.slice(0, maxQueryResponseLength), id => ({
-      image: stickerUrl + id,
-      height: 304,
-      width: 554
-    }))
+    sections: sections
   });
-  
-  getCache("query", q)
-    .then(stickerIds =>
-      stickerIds
-        ? response.json(buildResponse(stickerIds))
-        : generateNewsResults(q)
-        .then(items => Promise.all(items.map(item => addStickerItem(item))))
-        .then(stickerIds => {
-          console.log(stickerIds);
-          setCache("query", q, stickerIds);
-          return response.json(buildResponse(stickerIds));
-          })
-    )
-    .catch(err => response.status(500).send(err));
+  const cachedSections = await getCache("query", q);
+  if (cachedSections && !wantsFresh) {
+    response.json(buildResponse(cachedSections))
+  }
+  const news = await generateNewsResults(q, wantsFresh);
+  const newsStickers = await Promise.all(news).then(items => Promise.all(items.map(item => addStickerItem(item))));
+  const newsSection = {news: {title: "News", stickers: newsStickers}};
+  const sections = _.assign(cachedSections, newsSection);
+  setCache("query", q, sections);
+  response.json(buildResponse(sections));
 });
 
 // Different from /query because screenshot happens during the initial query
