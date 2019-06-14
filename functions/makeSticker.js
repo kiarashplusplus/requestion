@@ -121,7 +121,7 @@ exports.generateAlternatives = async (stickerType, stickerInput, stickerRef) => 
       const pages = alternativePages(stickerType, stickerInput);
       const alternatives = Promise.all(_.map(pages, async pageContent => {
         var {image, width, height} = await screenshot(pageContent);
-        var result = {image, imgWidth: width, imgHeight: height,};
+        var result = {imgWidth: width, imgHeight: height};
         result.imgSrc = stickerUrl + await addStickerImage(image, 'alternative');
         return result;
       }));

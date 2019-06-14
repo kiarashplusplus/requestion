@@ -13,6 +13,7 @@ var db = admin.firestore();
 const beefyOpts = { memory: '2GB', timeoutSeconds: 180 };
 const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
 const maxQueryResponseLength = 10;
+const maxNewsResponseLength = 4;
 
 // Initial user query
 // Returns a list of Sections with stickers to start rendering Serp in app.
@@ -30,7 +31,8 @@ exports.query = functions.https.onRequest(async (request, response) => {
   if (cachedSections && !wantsFresh) {
     response.json(buildResponse(cachedSections))
   }
-  const news = await generateNewsResults(q, wantsFresh);
+  var news = await generateNewsResults(q, wantsFresh);
+  news = news.slice(0, maxNewsResponseLength);
   const newsStickers = await Promise.all(news).then(items => Promise.all(items.map(item => addStickerItem(item))));
   const newsSection = {news: {title: "News", stickers: newsStickers}};
   const sections = _.assign(cachedSections, newsSection);
