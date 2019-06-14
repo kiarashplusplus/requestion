@@ -1,7 +1,9 @@
 'use strict';
 
+const glob = require("glob");
 const fs = require('fs');
 const Handlebars = require('handlebars');
+const _ = require('lodash');
 
 require.extensions['.handlebars'] = (module, filename) =>
   module.exports = fs.readFileSync(filename, 'utf8');
@@ -12,9 +14,9 @@ Handlebars.registerHelper('ifEquals', (arg1, arg2, options) =>
 Handlebars.registerPartial('head', TEMPLATES('head'));
 Handlebars.registerPartial('defaultMui', TEMPLATES('defaultMui'));
 
-exports.template = item => {
+exports.templatePage = item => {
   switch (item.type) {
-    case 'news_article':
+    case 'newsArticle':
       var source = TEMPLATES('newsArticle');
       var template = Handlebars.compile(source);
       var data = {
@@ -31,3 +33,25 @@ exports.template = item => {
 
   return result;
 };
+
+exports.alternativePages = (stickerType, stickerInput) => {
+  let pages;
+  switch (stickerType) {
+    case 'newsArticle':
+      const files = glob.sync('./templates/'+stickerType+'_*.handlebars'); //["./templates/newsArticle_v2.handlebars"];
+      pages = _.map(files, path => {
+        const source = require(path);
+        var template = Handlebars.compile(source);
+        var data = {
+          title: stickerInput.title,
+          snippet: stickerInput.snippet,
+          image: stickerInput.image
+        };
+        return template(data);
+      });
+      break;
+    default:
+      pages = [];
+  }
+  return pages;
+}

@@ -2,25 +2,59 @@
 
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const cloudinary = require('cloudinary').v2;
+const util = require('util');
+
 try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
 
-var cloudinary = require('cloudinary').v2
-const KEY = functions.config().cloudinary.key;
-if (!KEY) {
-  throw new Error('Missing the Cloudinary environment variable')
-}
-cloudinary.config({ 
-  cloud_name: 'kiarash', 
-  api_key: functions.config().cloudinary.key, 
-  api_secret: functions.config().cloudinary.secret
-});
-const util = require('util');
-const uploader = util.promisify(cloudinary.uploader.upload);
+let cloudinaryUploader;
 const REQUESTION_HOST = 'https://requestionapp.firebaseapp.com';
+const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
+const defaultNewsWidth = 300;
+const defaultNewsHeight = 400;
 
+const getCache = async (kind, key) =>
+  db.collection("cache").doc(kind + ":" + key).get()
+    .then(doc => (!doc.exists ? null : doc.data().data));
+
+const setCache = async (kind, key, value) =>
+  db.collection('cache').doc(kind + ":" + key).set({ data: value });
+
+exports.getCache = getCache;
+exports.setCache = setCache;
+
+exports.addStickerItem = async item =>
+  db.collection("stickers")
+    .add({ input: item, type: item.type, redirectUrl: item.redirectUrl })
+    .then(ref => ({
+      imgSrc: stickerUrl + ref.id,
+      imgWidth: defaultNewsWidth,
+      imgHeight: defaultNewsHeight,
+      redirectUrl: item.redirectUrl
+    }));
+
+exports.addStickerImage = (image, type) =>
+  db.collection('stickers').add({ image: image, type: type }).then(ref => ref.id);
+
+const getUploader = () => {
+  if (cloudinaryUploader) return cloudinaryUploader;
+  const KEY = functions.config().cloudinary.key;
+  if (!KEY) {
+    throw new Error('Missing the Cloudinary environment variable')
+  }
+  cloudinary.config({ 
+    cloud_name: 'kiarash', 
+    api_key: functions.config().cloudinary.key, 
+    api_secret: functions.config().cloudinary.secret
+  });
+  return util.promisify(cloudinary.uploader.upload);
+};
+
+// TODO: update for base64 images.
 const uploadSticker = async stickerId => {
-  const upload = uploader(`${REQUESTION_HOST}/sticker/?id=${stickerId}`, {
+  cloudinaryUploader = getUploader();
+  const upload = cloudinaryUploader(`${REQUESTION_HOST}/sticker/?id=${stickerId}`, {
     tags: "sticker_upload"
   });
   return upload.then(image => ({
@@ -30,13 +64,6 @@ const uploadSticker = async stickerId => {
     height: image.height
   }));
 };
-
-const getCache = async (kind, key) =>
-  db.collection("cache").doc(kind + ":" + key).get()
-    .then(doc => (!doc.exists ? null : doc.data().data));
-
-const setCache = async (kind, key, value) =>
-  db.collection('cache').doc(kind + ":" + key).set({ data: value });
 
 exports.overlay = (stickerId, base = 'v1559249853/base0.jpg') => {
   if (!stickerId) return null;
@@ -58,5 +85,3 @@ exports.overlay = (stickerId, base = 'v1559249853/base0.jpg') => {
     );
 }
 
-exports.getCache = getCache;
-exports.setCache = setCache;

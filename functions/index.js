@@ -2,10 +2,10 @@
 
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const { generateGoogleResults, makeSticker } = require('./makeSticker');
-const { overlay, getCache, setCache } = require('./utils');
+const { generateAlternatives, generateGoogleResults, makeSticker } = require('./makeSticker');
+const { addStickerItem, addStickerImage, overlay, getCache, setCache } = require('./utils');
 const { generateNewsResults } = require('./results');
-var _ = require('lodash');
+const _ = require('lodash');
 
 try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
@@ -13,25 +13,10 @@ var db = admin.firestore();
 const beefyOpts = { memory: '2GB', timeoutSeconds: 180 };
 const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
 const maxQueryResponseLength = 10;
-const newsKey = 'news';
-const defaultNewsWidth = 300;
-const defaultNewsHeight = 400;
 
-const addStickerItem = async item =>
-  db.collection('stickers').add({ input: item }).then(ref => ({
-    imgSrc: stickerUrl + ref.id, 
-    imgWidth: defaultNewsWidth, 
-    imgHeight: defaultNewsHeight, 
-    // key: item.type, 
-    redirectUrl: item.redirectUrl
-  }));
-
-const addStickerImage = (image, meta='') =>
-  db.collection('stickers').add({ image: image, meta: meta }).then(ref => ref.id);
-  
 // Initial user query
-// Returns list of stickerIds and sizes to start rendering serp.
-// Screenshot shouldn't block this function.
+// Returns a list of Sections with stickers to start rendering Serp in app.
+// No blocking Screenshot events.
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
   const wantsFresh = request.query.fresh ? true : false;
@@ -95,6 +80,7 @@ exports.google = functions.runWith(beefyOpts).https.onRequest(async (request, re
 // Get sticker by providing a stickerId
 exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
   const stickerId = req.query.id;
+  if (!stickerId) return res.status(404).send('Not a valid stickerId.');
   const buildResponse = b64 => ({
     stickerId: stickerId,
     image: b64
@@ -113,10 +99,13 @@ exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
         const sticker = doc.data();
         sticker.image
           ? cachedSticker(sticker.image)
-          : makeSticker(sticker.input).then(buffer => {
-              let encoded = 'data:image/png;base64,' + buffer;
-              stickerRef.update({ image: encoded });
-              res.json(buildResponse(encoded));
+          : makeSticker(sticker.input).then(result => {
+              if (result) {
+                stickerRef.update(result);
+                res.json(buildResponse(result.image));
+              } else {
+                res.json(buildResponse(''));
+              }
             });
       }
     })
@@ -125,6 +114,51 @@ exports.sticker = functions.runWith(beefyOpts).https.onRequest((req, res) => {
       res.status(500).send(err);
     });
 });
+
+// Database Trigger
+exports.createAlternatives = functions.runWith(beefyOpts).firestore
+  .document('stickers/{stickerId}')
+  .onCreate(async (doc, context) => {
+    const sticker = doc.data();
+    if (!sticker.alternatives && !sticker.isBuildingAlternatives) {
+        await generateAlternatives(sticker.type, sticker.input, doc.ref);
+    }
+  });
+  
+  // First checks for existing `alternatives` feild in sticker, or waits if `isBuildingAlternatives` 
+  // is in an `inProgress` state. Otherwise, generates alternatives and returns them.
+  exports.alternatives = functions.runWith(beefyOpts).https.onRequest((req, res) => {
+    const stickerId = req.query.id;
+    if (!stickerId) return res.status(404).send('Not a valid stickerId.');
+    const buildResponse = stickers => ({
+      original: stickerUrl + stickerId,
+      stickers: stickers
+    });
+    var stickerRef = db.collection('stickers').doc(stickerId);
+    let observer = stickerRef.onSnapshot(
+      async doc => {
+        try {
+          if (!doc.exists) return res.status(404).send('Not a valid stickerId.');
+          const sticker = doc.data();
+          if (sticker.alternatives) {
+            return res.json(buildResponse(sticker.alternatives));
+          } else if (!sticker.isBuildingAlternatives) {
+            // Build and return it
+            const alternatives = await generateAlternatives(sticker.type, sticker.input, stickerRef);
+            return res.json(buildResponse(alternatives));
+          } else if (sticker.isBuildingAlternatives != 'inProgress') {
+            return res.json(buildResponse(null));
+          }
+        } catch (e) {
+          observer(); //supposed to stop listening
+          console.log('alternatives endpoint error', e);
+        }
+      },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      }
+    );
+  });
 
 exports.overlay = functions.https.onRequest((req, res) => {
   const stickerId = req.query.id;

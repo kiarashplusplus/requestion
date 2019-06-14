@@ -3,6 +3,7 @@
 functions/.runtimeconfig.json
 functions/.DS_Store
 .DS_Store
+requestion.code-workspace
 
 # Expo
 .expo/*
