@@ -39,7 +39,11 @@ const screenshot = async (pageContent, pageEvaluator=shootPageEvaluator)  => {
   try {
     await page.setContent(pageContent);
     const rect = await page.evaluate(pageEvaluator);
-    if (!rect) return null;
+    if (!rect) { 
+      console.log('pageEvaluator returned null!')
+      console.log(pageContent);
+      return null;
+    }
     const buffer = await page.screenshot({
       type: 'png',
       omitBackground: true,
@@ -57,7 +61,7 @@ const screenshot = async (pageContent, pageEvaluator=shootPageEvaluator)  => {
       height: Math.round(rect.height)
     };
   } catch (e) {
-    console.log(e);
+    console.log('screenshot error:', e);
     return null;
   }
 };

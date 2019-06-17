@@ -19,10 +19,22 @@ const {
   Link,
 } = MaterialUI;
 
-{{#ifEquals mui "default"}}
-    {{> defaultMui }}
-{{/ifEquals}}
-
+const theme = createMuiTheme({
+    palette: {
+    primary: {
+        main: '#556cd6',
+    },
+    secondary: {
+        main: '#19857b',
+    },
+    error: {
+        main: colors.red.A400,
+    },
+    background: {
+        default: '#fff',
+    },
+    },
+});
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,7 +60,7 @@ function NewsCard() {
           component="img"
           alt="{{title}}"
           height="140"
-          image="{{image}}"
+          image="{{{image}}}"
           title="{{title}}"
         />
         <CardContent>
