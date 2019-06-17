@@ -21,6 +21,7 @@ const formatNewsAPI = data =>
           title: item.title,
           snippet: item.description,
           redirectUrl: item.url,
+          source: item.source.name,
           type: "newsArticle"
         }))
         .value();

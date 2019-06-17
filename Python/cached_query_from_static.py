@@ -94,13 +94,10 @@ def query(q):
         stickers = map(
             lambda name: upload_sticker_and_alternatives(section_path, name),
             sticker_names)
-        sections[key] = {"title": TITLE_MAP[key], "stickers": list(stickers)}
+        sections[key] = {"title": TITLE_MAP[key], "data": list(stickers)}
     db.collection(u'cache').document('query:' + q).set({
-        "data": {
-            "query": q,
-            "sections": sections
-        }
+        "data": sections
     })
     return sections
 
-query("2019 Women's World Cup")
+query("2019")

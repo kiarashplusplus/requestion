@@ -11,7 +11,7 @@ try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
 
 const beefyOpts = { memory: '2GB', timeoutSeconds: 180 };
-const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
+const stickerUrl = 'https://requestion.app/sticker?id=';
 const maxQueryResponseLength = 10;
 const maxNewsResponseLength = 4;
 
@@ -34,8 +34,8 @@ exports.query = functions.https.onRequest(async (request, response) => {
   var news = await generateNewsResults(q, wantsFresh);
   news = news.slice(0, maxNewsResponseLength);
   const newsStickers = await Promise.all(news).then(items => Promise.all(items.map(item => addStickerItem(item))));
-  const newsSection = {news: {title: "News", stickers: newsStickers}};
-  const sections = _.assign(cachedSections, newsSection);
+  const newsSection = {news: {title: "News", data: newsStickers}};
+  const sections = _.merge(cachedSections, newsSection);
   setCache("query", q, sections);
   response.json(buildResponse(sections));
 });

@@ -23,7 +23,8 @@ exports.templatePage = item => {
         mui: 'default',
         title: item.title,
         snippet: item.snippet,
-        image: item.image
+        image: item.image,
+        source: item.source,
       };
       var result = template(data);
       break;

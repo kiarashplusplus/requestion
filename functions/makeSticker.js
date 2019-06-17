@@ -9,7 +9,7 @@ const { addStickerImage } = require('./utils');
 const _ = require('lodash');
 
 const typesWithAlternatives = ['newsArticle'];
-const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
+const stickerUrl = 'https://requestion.app/sticker?id=';
 let browser;
 
 const getBrowser = async () => {

@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  {{> head}}
-  <body>
+  <head>
+    <title>My page</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+    <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/babel-standalone@latest/babel.min.js" crossorigin="anonymous"></script>
+    <!-- Fonts to support Material Design -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" />
+    <!-- Icons to support Material Design -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  </head>
+    <body>
     <div id="root"></div>
     <script type="text/babel">
 
@@ -19,10 +31,22 @@ const {
   Link,
 } = MaterialUI;
 
-{{#ifEquals mui "default"}}
-    {{> defaultMui }}
-{{/ifEquals}}
-
+const theme = createMuiTheme({
+    palette: {
+    primary: {
+        main: '#556cd6',
+    },
+    secondary: {
+        main: '#19857b',
+    },
+    error: {
+        main: colors.red.A400,
+    },
+    background: {
+        default: '#fff',
+    },
+    },
+});
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,6 +61,37 @@ const useStyles = makeStyles(theme => ({
   pos: {
     marginBottom: 12,
   },
+  after: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 1,
+    content: '',
+    display: 'block',
+    background: 'linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.75) 30%,rgba(0,0,0,.5) 55%,rgba(0,0,0,.0001) 80%,rgba(0,0,0,.0001))',
+  },
+  overlayed: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 16,
+    color: 'white!important',
+    zIndex: 3,
+    fontSize: '1.4rem',
+    padding: 16,
+    maxHeight:'160px',
+  },
+  content: {
+    padding: 0,
+  },
+  newsSource: {
+    fontSize: '1rem',
+    opacity: 0.5,
+  },
+  newsTitle: {
+    fontSize: '1.4rem',
+  }
 }));
 
 function NewsCard() {
@@ -47,19 +102,23 @@ function NewsCard() {
         <CardMedia
           component="img"
           alt="{{title}}"
-          height="140"
+          height="340"
           image="{{image}}"
           title="{{title}}"
         />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+        <div className={classes.after}></div>
+        <CardContent className={classes.content}>
+          <div className={classes.overlayed}>
+          <Typography className={classes.newsSource} gutterBottom variant="h5" component="h2">
+            {{source}}
+          </Typography>
+          <Typography className={classes.newsTitle} gutterBottom variant="h5" component="h2">
             {{title}}
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {{snippet}}
-          </Typography>
+          </div>
         </CardContent>
-      </CardActionArea>
+      </CardActionArea>      
+      <span className="after"></span>
     </Card>
   );
 }

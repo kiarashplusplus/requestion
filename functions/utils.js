@@ -9,10 +9,10 @@ try {admin.initializeApp(functions.config().firebase);} catch (e) {}
 var db = admin.firestore();
 
 let cloudinaryUploader;
-const REQUESTION_HOST = 'https://requestionapp.firebaseapp.com';
-const stickerUrl = 'https://requestionapp.firebaseapp.com/sticker?id=';
-const defaultNewsWidth = 300;
-const defaultNewsHeight = 400;
+const REQUESTION_HOST = 'https://requestion.app';
+const stickerUrl = 'https://requestion.app/sticker?id=';
+const defaultNewsWidth = 552;
+const defaultNewsHeight = 340;
 
 const getCache = async (kind, key) =>
   db.collection("cache").doc(kind + ":" + key).get()
@@ -31,7 +31,8 @@ exports.addStickerItem = async item =>
       imgSrc: stickerUrl + ref.id,
       imgWidth: defaultNewsWidth,
       imgHeight: defaultNewsHeight,
-      redirectUrl: item.redirectUrl
+      redirectUrl: item.redirectUrl,
+      source: item.source,
     }));
 
 exports.addStickerImage = (image, type) =>
