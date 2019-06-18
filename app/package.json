@@ -9,15 +9,18 @@
   "dependencies": {
     "awesome-debounce-promise": "^2.1.0",
     "crypto-js": "3.1.9-1",
-    "expo": "^32.0.0",
+    "expo": "^33.0.0",
+    "expo-font": "^5.0.1",
+    "expo-linear-gradient": "^5.0.1",
+    "expo-web-browser": "^5.0.3",
     "lodash": "^4.17.11",
-    "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
-    "react-native-dynamic-search-bar": "^0.1.11",
+    "react": "16.8.3",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-dynamic-vector-icons": "0.0.3",
     "react-native-iphone-x-helper": "^1.2.1",
     "react-native-linear-gradient": "^2.5.4",
-    "react-native-vector-icons": "^6.4.2"
+    "react-native-vector-icons": "^6.4.2",
+    "util": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

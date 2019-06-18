@@ -1,0 +1,71 @@
+{
+  "_args": [
+    [
+      "react-native-dynamic-search-bar@0.1.11",
+      "/Users/kiarash/Code/requestion/app"
+    ]
+  ],
+  "_from": "react-native-dynamic-search-bar@0.1.11",
+  "_id": "react-native-dynamic-search-bar@0.1.11",
+  "_inBundle": false,
+  "_integrity": "sha512-7A1XDnrvCAFncjR5jVDzUmiK74jbV0E7mtVB0vMjdTzV+dxzvWNUEqW3zlFH1krjI4tMI3Mz7SLmgZeqjP4MYw==",
+  "_location": "/react-native-dynamic-search-bar",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "react-native-dynamic-search-bar@0.1.11",
+    "name": "react-native-dynamic-search-bar",
+    "escapedName": "react-native-dynamic-search-bar",
+    "rawSpec": "0.1.11",
+    "saveSpec": null,
+    "fetchSpec": "0.1.11"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/react-native-dynamic-search-bar/-/react-native-dynamic-search-bar-0.1.11.tgz",
+  "_spec": "0.1.11",
+  "_where": "/Users/kiarash/Code/requestion/app",
+  "author": {
+    "name": "Kuray",
+    "email": "kurayogun@gmail.com",
+    "url": "FreakyCoder"
+  },
+  "bugs": {
+    "url": "https://github.com/WrathChaos/react-native-dynamic-search-bar/issues"
+  },
+  "description": "Fully customizable and dynamic Search Bar for React Native.",
+  "homepage": "https://www.freakycoder.com",
+  "keywords": [
+    "gradient",
+    "card",
+    "search",
+    "search-bar",
+    "dynamic",
+    "dynamic-search-bar",
+    "FreakyCoder",
+    "freakycoder",
+    "kuray",
+    "Kuray",
+    "react",
+    "react-native",
+    "javascript",
+    "ui-lib",
+    "rn"
+  ],
+  "license": "MIT",
+  "main": "./lib/src/SearchBar.js",
+  "name": "react-native-dynamic-search-bar",
+  "peerDependencies": {
+    "react": ">= 16.x.x",
+    "react-native": ">= 0.55.x",
+    "react-native-vector-icons": ">= 6.x.x",
+    "react-native-dynamic-vector-icons": ">= x.x.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/WrathChaos/react-native-dynamic-search-bar.git"
+  },
+  "version": "0.1.11"
+}

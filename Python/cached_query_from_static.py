@@ -100,4 +100,4 @@ def query(q):
     })
     return sections
 
-query("2019")
+query("2019 Women's World Cup")

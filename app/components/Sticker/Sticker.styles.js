@@ -30,7 +30,7 @@ export default {
         shadowColor: "#595959",
         shadowOffset: {
           width: 1,
-          height: 3
+          height: 1
         },
         shadowRadius: 5,
         shadowOpacity: 0.5

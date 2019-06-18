@@ -24,6 +24,9 @@
     },{
       "source": "/alternatives",
       "function": "alternatives"
+    },{
+      "source": "/featured",
+      "function": "featured"
     }],
     "ignore": [
       "firebase.json",

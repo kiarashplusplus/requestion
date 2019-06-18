@@ -5,6 +5,7 @@ const functions = require('firebase-functions');
 const { generateAlternatives, generateGoogleResults, makeSticker } = require('./makeSticker');
 const { addStickerItem, addStickerImage, overlay, getCache, setCache } = require('./utils');
 const { generateNewsResults } = require('./results');
+const requestIp = require('request-ip');
 const _ = require('lodash');
 
 try {admin.initializeApp(functions.config().firebase);} catch (e) {}
@@ -166,6 +167,22 @@ exports.overlay = functions.https.onRequest((req, res) => {
   const stickerId = req.query.id;
   overlay(stickerId).then(url => res.send(url));
 })
+
+exports.featured = functions.https.onRequest((req, res) => {
+  console.log(req.connection.remoteAddress);
+  const clientIp = requestIp.getClientIp(req); 
+  console.log(clientIp);
+  console.log(req.headers["x-forwarded-for"]);
+  res.json([
+    {
+      "query": "2019 Women's World Cup",
+      "imgWidth": 949,
+      "imgSrc": "https://requestion.app/sticker/?id=fifa",
+      "imgHeight": 374
+    }
+  ]);
+});
+
 
 exports.ping = functions.https.onRequest((req, res) => {
   res.send('ping');
