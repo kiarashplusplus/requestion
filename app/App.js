@@ -126,7 +126,7 @@ export default class App extends Component {
     return (
       <FlatList
         initialNumToRender={2}
-        minimumViewTime={100}
+        // minimumViewTime={100}
         data={section.data}
         horizontal={true}
         renderItem={({ item }) => this.renderItem(item)}
@@ -139,7 +139,7 @@ export default class App extends Component {
     const inputAccessoryViewID = "requestionSearch";
     const placeholder = "Search for fact stickers";
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#21283d" }}>
+      this.state.fontLoaded && <SafeAreaView style={{ flex: 1, backgroundColor: "#21283d" }}>
         <StatusBar barStyle={"light-content"} />
         <View style={styles.container}>
           <SearchBar
@@ -174,7 +174,7 @@ export default class App extends Component {
                 stickerDetails={this.state.stickerDetails}
               />
             )}
-            {!this.state.isDetailsPage && this.state.fontLoaded && (
+            {!this.state.isDetailsPage && (
               <SectionList
                 renderItem={({ item, index, section }) =>
                   !index && this.renderSection(section)
@@ -251,13 +251,8 @@ export default class App extends Component {
 
 const styles = {
   container: {
-    ...Platform.select({
-      android: {
-        top: 24
-      }
-    }),
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#21283d"
   }
