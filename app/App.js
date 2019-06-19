@@ -165,7 +165,7 @@ export default class App extends Component {
             }}
           />
           <View style={{ top: 16 }}>
-            {this.state.isLoading && (
+            {this.state.isLoading && !this.state.isDetailsPage && (
               <ActivityIndicator animating={this.state.isLoading} />
             )}
             {this.state.isDetailsPage && (
