@@ -2,6 +2,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '10.0'
 
 target 'requestion' do
+  pod 'Firebase/Core'
+  
   pod 'ExpoKit',
     :git => "http://github.com/expo/expo.git",
     :tag => "ios/2.11.0",
