@@ -176,9 +176,9 @@ exports.featured = functions.https.onRequest((req, res) => {
   res.json([
     {
       "query": "2019 Women's World Cup",
-      "imgWidth": 949,
+      "imgWidth": 600,
       "imgSrc": "https://requestion.app/sticker/?id=fifa",
-      "imgHeight": 374
+      "imgHeight": 338
     }
   ]);
 });
