@@ -53,7 +53,11 @@
             </div>
           </div>
           <h3 style="font-family: Roboto">Start a conversation.</h3>
-          <p class="banner">Requestion app will be available on the App Store soon, in the meantime, please fill out <a href="https://forms.gle/wNtsELoieJh3i6KY7">this survey</a> to try the beta on <a href="https://apps.apple.com/us/app/testflight/id899247664">TestFlight</a>. Thanks!</p>
+          <p class="banner">Requestion app will be available on the App Store soon, in the meantime, please fill out 
+            <a href="https://forms.gle/wNtsELoieJh3i6KY7" 
+              onclick="gtag('event', 'Click', {
+              'event_category': 'External Links',
+              'event_label': 'Idea validation survey'})"> this survey</a> to try the beta on <a href="https://apps.apple.com/us/app/testflight/id899247664">TestFlight</a>. Thanks!</p>
           <div class="startup">
             <p> Built with ❤️ from NYC 🗽</p>
           </div>
@@ -69,6 +73,16 @@
           "operatingSystem": "IOS",
           "applicationCategory": "https://schema.org/SocialNetworkingApplication"
         }
-        </script>
+    </script>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142590660-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-142590660-1');
+    </script>
+
   </body>
 </html>
