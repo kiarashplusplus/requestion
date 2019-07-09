@@ -53,7 +53,7 @@ html{
  .error-404 .wrapper{
     padding-right:30px
  }
- 
+
  .section{
     padding:50px 0
  }
@@ -64,25 +64,6 @@ html{
     .section{
         padding:100px 0
     }
- }
- footer.site-footer{
-    background-color:#f9f9f9;
-    background-image:url(../static/logo.png);
-    background-position:97% 54%;
-    background-position:calc(100% - 30px) 54%;
-    background-position:right 30px 54%;
-    background-size:75px 18px;
-    background-repeat:no-repeat;
-    min-height:90px;
-    position:relative;
-    text-align:right;
-    z-index:9
- }
- .lt-ie10 footer.site-footer{
-    background-image:url(../static/logo.png)
- }
- .investor{
-    padding-top:70px
  }
  .hide,.hide-inline{
     display:none
@@ -102,30 +83,6 @@ html{
  p{
     margin-top:0
  }
- .copy a.read-more{
-    color:#ed1c24;
-    text-decoration:none
- }
- .copy a.read-more:hover{
-    color:#7f0a0f
- }
- .copy a{
-    color:#757575;
-    text-decoration:underline
- }
- .copy a:hover{
-    color:darker(#757575,20%)
- }
- .copy a.hidden-link{
-    color:inherit;
-    cursor:text;
-    text-decoration:none
- }
- .copy a.hidden-link:hover{
-    color:inherit;
-    cursor:text;
-    text-decoration:none
- }
  h1{
     font-size:26px;
     font-weight:normal;
@@ -139,6 +96,11 @@ html{
  }
  h1 a:hover{
     color:#757575
+ }
+ .share{
+   height: auto;
+   width: 18px;
+   padding-left: 2px;
  }
  #logo{
     background-repeat:no-repeat;
@@ -250,10 +212,10 @@ html{
         max-width:100%
     }
  }
- 
- 
+
+
  /* header */
- 
+
  .header {
    background-color: #fff;
    box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
@@ -262,7 +224,7 @@ html{
    z-index: 3;
    top:0px!important;
  }
- 
+
  .header ul {
    margin: 0;
    padding: 0;
@@ -270,7 +232,7 @@ html{
    overflow: hidden;
    background-color: #fff;
  }
- 
+
  .header li a {
    display: block;
    padding: 20px 20px;
@@ -278,12 +240,12 @@ html{
    text-decoration: none;
    color: #000;
  }
- 
+
  .header li a:hover,
  .header .menu-btn:hover {
    background-color: #f4f4f4;
  }
- 
+
  .header .logo {
    display: block;
    float: left;
@@ -291,18 +253,18 @@ html{
    padding: 20px 20px;
    text-decoration: none;
  }
- 
+
  /* menu */
- 
+
  .header .menu {
    clear: both;
    max-height: 0;
    transition: max-height .2s ease-out;
    padding-left: 36px;
  }
- 
+
  /* menu icon */
- 
+
  .header .menu-icon {
    cursor: pointer;
    display: inline-block;
@@ -311,7 +273,7 @@ html{
    position: relative;
    user-select: none;
  }
- 
+
  .header .menu-icon .navicon {
    background: #333;
    display: block;
@@ -320,7 +282,7 @@ html{
    transition: background .2s ease-out;
    width: 18px;
  }
- 
+
  .header .menu-icon .navicon:before,
  .header .menu-icon .navicon:after {
    background: #333;
@@ -331,44 +293,44 @@ html{
    transition: all .2s ease-out;
    width: 100%;
  }
- 
+
  .header .menu-icon .navicon:before {
    top: 5px;
  }
- 
+
  .header .menu-icon .navicon:after {
    top: -5px;
  }
- 
+
  /* menu btn */
- 
+
  .header .menu-btn {
    display: none;
  }
- 
+
  .header .menu-btn:checked ~ .menu {
    max-height: 240px;
  }
- 
+
  .header .menu-btn:checked ~ .menu-icon .navicon {
    background: transparent;
  }
- 
+
  .header .menu-btn:checked ~ .menu-icon .navicon:before {
    transform: rotate(-45deg);
  }
- 
+
  .header .menu-btn:checked ~ .menu-icon .navicon:after {
    transform: rotate(45deg);
  }
- 
+
  .header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:before,
  .header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:after {
    top: 0;
  }
- 
+
  /* 48em = 768px */
- 
+
  @media (min-width: 100em) {
    .header li {
      float: left;
@@ -386,9 +348,9 @@ html{
      display: none;
    }
  }
- 
- 
- 
+
+
+
  .column {
    float: left;
    width: 33.33%;

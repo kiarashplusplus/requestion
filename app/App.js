@@ -50,8 +50,8 @@ const requestionQuery = query =>
       return [];
     });
 
-// 1.5 seconds pause before fetching new data based on user search query changes.
-const queryDebounced = AwesomeDebouncePromise(requestionQuery, 1500);
+// 1 second pause before fetching new data based on user search query changes.
+const queryDebounced = AwesomeDebouncePromise(requestionQuery, 500);
 
 export default class App extends Component {
   constructor(props) {
