@@ -127,41 +127,41 @@ exports.createAlternatives = functions.runWith(beefyOpts).firestore
         await generateAlternatives(sticker.type, sticker.input, doc.ref);
     }
   });
-  
-  // First checks for existing `alternatives` feild in sticker, or waits if `isBuildingAlternatives` 
-  // is in an `inProgress` state. Otherwise, generates alternatives and returns them.
-  exports.alternatives = functions.runWith(beefyOpts).https.onRequest((req, res) => {
-    const stickerId = req.query.id;
-    if (!stickerId) return res.status(404).send('Not a valid stickerId.');
-    const buildResponse = stickers => ({
-      original: stickerUrl + stickerId,
-      stickers: stickers
-    });
-    var stickerRef = db.collection('stickers').doc(stickerId);
-    let observer = stickerRef.onSnapshot(
-      async doc => {
-        try {
-          if (!doc.exists) return res.status(404).send('Not a valid stickerId.');
-          const sticker = doc.data();
-          if (sticker.alternatives) {
-            return res.json(buildResponse(sticker.alternatives));
-          } else if (!sticker.isBuildingAlternatives) {
-            // Build and return it
-            const alternatives = await generateAlternatives(sticker.type, sticker.input, stickerRef);
-            return res.json(buildResponse(alternatives));
-          } else if (sticker.isBuildingAlternatives != 'inProgress') {
-            return res.json(buildResponse(null));
-          }
-        } catch (e) {
-          observer(); //supposed to stop listening
-          console.log('alternatives endpoint error', e);
-        }
-      },
-      err => {
-        console.log(`Encountered error: ${err}`);
-      }
-    );
+
+// First checks for existing `alternatives` feild in sticker, or waits if `isBuildingAlternatives` 
+// is in an `inProgress` state. Otherwise, generates alternatives and returns them.
+exports.alternatives = functions.runWith(beefyOpts).https.onRequest((req, res) => {
+  const stickerId = req.query.id;
+  if (!stickerId) return res.status(404).send('Not a valid stickerId.');
+  const buildResponse = stickers => ({
+    original: stickerUrl + stickerId,
+    stickers: stickers
   });
+  var stickerRef = db.collection('stickers').doc(stickerId);
+  let observer = stickerRef.onSnapshot(
+    async doc => {
+      try {
+        if (!doc.exists) return res.status(404).send('Not a valid stickerId.');
+        const sticker = doc.data();
+        if (sticker.alternatives) {
+          return res.json(buildResponse(sticker.alternatives));
+        } else if (!sticker.isBuildingAlternatives) {
+          // Build and return it
+          const alternatives = await generateAlternatives(sticker.type, sticker.input, stickerRef);
+          return res.json(buildResponse(alternatives));
+        } else if (sticker.isBuildingAlternatives != 'inProgress') {
+          return res.json(buildResponse(null));
+        }
+      } catch (e) {
+        observer(); //supposed to stop listening
+        console.log('alternatives endpoint error', e);
+      }
+    },
+    err => {
+      console.log(`Encountered error: ${err}`);
+    }
+  );
+});
 
 exports.overlay = functions.https.onRequest((req, res) => {
   const stickerId = req.query.id;
@@ -182,7 +182,6 @@ exports.featured = functions.https.onRequest((req, res) => {
     }
   ]);
 });
-
 
 exports.ping = functions.https.onRequest((req, res) => {
   res.send('ping');

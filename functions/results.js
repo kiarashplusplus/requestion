@@ -5,12 +5,6 @@ const functions = require('firebase-functions');
 var _ = require('lodash');
 const {getCache, setCache} = require('./utils');
 
-
-// In development only
-process.on('uncaughtException', function (err) {
-    console.log(err);
-}); 
-
 const formatNewsAPI = data =>
   (data.status = !"ok" || !data.articles.length)
     ? []
