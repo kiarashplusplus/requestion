@@ -102,6 +102,7 @@ html{
    width: 18px;
    padding-left: 2px;
  }
+
  #logo{
     background-repeat:no-repeat;
     background-position:0 0;
@@ -122,6 +123,31 @@ html{
  .lt-ie9 #logo{
     background-image:url(../static/logo.png)
  }
+
+ #footer-logo{
+   background-repeat:no-repeat;
+   background-position:0 0;
+   color:transparent;
+   font:0 / 0 a;
+   text-shadow:none;
+   background-size:100px 24px;
+   height:24px;
+   left:36px;
+   position:absolute;
+   top:27px;
+   width:126px;
+   z-index:999
+}
+#footer-logo img{
+   image-rendering:optimizeQuality
+}
+
+@media all and (min-width:800px){
+   #footer-logo {
+      height:0px;
+   }
+}
+
  #gicon{
     margin-bottom:-70px;
     margin-left:-95px;
@@ -203,16 +229,19 @@ html{
     content:url(../img/forgoogle-large_2x.png) url(../img/forgoogle-large_1x.png) url(../img/forgoogle-medium_2x.png) url(../img/forgoogle-medium_1x.png) url(../img/forgoogle-small_2x.png) url(../img/forgoogle-small_1x.png)
  }
  #signature{
-    margin-left:-15px;
-    margin-top:20px;
-    max-width:80%
+   color: #717070;
  }
- @media all and (max-width:1024px){
-    #signature{
-        max-width:100%
-    }
- }
+ #menu {
+   position: absolute;
+   right: 36px;
+   top: 27px;
+   z-index: 999;
+   line-height: 26px;
+}
 
+#paragraph {
+  max-width:500px;
+}
 
  /* header */
 
@@ -361,7 +390,7 @@ html{
     padding-right: 100px;
  }
  .banner {
-    margin-top: 70px;
+    margin-top: 50px;
  }
  .row:after {
    content: "";
@@ -388,6 +417,10 @@ html{
  #ux {
    padding:100px;
  }
+ .paragraph {
+    margin-top:-170px;
+    padding-left:300px;
+ }
  @media all and (max-width:600px){
    .banner {
      margin-top:100px;
@@ -395,12 +428,21 @@ html{
    .startup {
      margin-top:130px
    }
+   .paragraph {
+      margin-top:0;
+      padding-left:40px;
+      max-width: 300px;
+   }
+   .player{
+     width: 256px;
+     height: 256px;
+   }
    .column {
      /* width: 100%; */
      }
      .text-container{
          max-width:500px;
-         padding-left: 50px;
+         padding-left: 40px;
          padding-right: 50px;
      }
      .wrapper{

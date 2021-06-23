@@ -1,40 +1,17 @@
 {
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
   "hosting": {
     "public": "public",
-    "cleanUrls": true,
-    "rewrites": [{
-      "source": "/ping",
-      "function": "ping"
-    },{
-      "source": "/sticker",
-      "function": "sticker"
-    },{
-      "source": "/query",
-      "function": "query"
-    },{
-      "source": "/overlay",
-      "function": "overlay"
-    },{
-      "source": "/google",
-      "function": "google"
-    },{
-      "source": "/alternatives",
-      "function": "alternatives"
-    },{
-      "source": "/featured",
-      "function": "featured"
-    }],
+    "site": "shiraz-finance",
     "ignore": [
       "firebase.json",
-      "**/.md",
+      "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
-  },
-  "functions": {
-    "source": "functions"
   }
 }

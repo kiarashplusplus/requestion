@@ -1,90 +1,111 @@
 
 
 <!doctype html>
-<!--
-    Do you know HTML and curious to use it to make cool stickers
-    for Snapchat and Instagram? Email kiarash@requestion.app!
- -->
 <!--[if lt IE 7]> <html class="ie6 lt-ie10 lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="ie7 lt-ie10 lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="ie8 lt-ie10 lt-ie9" lang="en"> <![endif]-->
 <!--[if IE 9]>    <html class="ie9 lt-ie10" lang="en"> <![endif]-->
 <!--[if gt IE 9]><!--> <html lang="en"> <!--<![endif]-->
   <head>
-    <title>Requestion</title>
+    <title>Shiraz Finance</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width, height=device-height">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <meta property="og:url" content="https://requestion.app/">
-    <meta property="og:title" content="Requestion" />
-    <meta property="og:image" content="https://requestion.app/static/icon.png" />
+    <meta property="og:url" content="https://shiraz-finance.web.app">
+    <meta property="og:title" content="Shiraz Finance" />
+    <meta property="og:image" content="https://shiraz-finance.web.app/static/logo.png" />
     <meta property="og:image:width" content="256">
     <meta property="og:image:height" content="256">
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
-    <meta property="og:description" content="Start a conversation.">
+    <meta property="og:description" content="Borrow and Lend Crypto.">
 
-    <meta itemprop="name" content="Requestion">
-    <meta itemprop="description" content="Start a conversation.">
-    <meta itemprop="image" content="https://requestion.app/static/icon.png" />
+    <meta itemprop="name" content="Shiraz Finance">
+    <meta itemprop="description" content="Borrow and Lend Crypto.">
+    <meta itemprop="image" content="https://shiraz-finance.web.app/static/logo.png" />
 
-    <meta name="description" content="Requestion: start a conversation.">
-    <link rel="canonical" href="https://requestion.app/">
+    <meta name="description" content="Shiraz Finance: Borrow and Lend Crypto.">
+    <link rel="canonical" href="https://shiraz-finance.web.app/">
 
-    <link rel="icon" href="https://requestion.app/static/icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://requestion.app/static/icon.png">
+    <link rel="icon" href="https://shiraz-finance.web.app/static/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="https://shiraz-finance.web.app/static/logo.png">
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/start.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
   </head>
   <body>
     <header class="header">
       <img id="logo" src="/static/logo.png" alt="logo" ></img>
-  </header>
+
+    </header>
+
     <main class="outer-container">
+      <div>
       <div class="wrapper">
         <div class="text-container">
             <div class="row">
             <div class="column" >
-          	<img src="/static/icon.png" alt="Requestion App" class="responsive">
+
+              <lottie-player class="player" src="/static/borrow.json"  background="transparent"  speed="1"  loop autoplay></lottie-player>
             </div>
           </div>
-          <h3 style="font-family: Roboto">Start a conversation
-            <img src="https://requestion.app/static/share-icon.jpg" class="share">
-          </h3>
-          <p class="banner">Requestion app will be available on the App Store soon, in the meantime, please fill out
-            <a href="https://forms.gle/wNtsELoieJh3i6KY7"
-              onclick="gtag('event', 'Click', {
-              'event_category': 'External Links',
-              'event_label': 'Idea validation survey'})"> this survey</a> to try the beta on <a href="https://apps.apple.com/us/app/testflight/id899247664">TestFlight</a>. Thanks!</p>
-          <div class="startup">
-            <p> Built with ❤️ from NYC 🗽</p>
-          </div>
+        </div>
+        <div class="paragraph">
+          <div>
+          <h2 style="font-family: Roboto">Borrow, crypto money freely.</h2>
+          <p id="paragraph">Creditors available on Shiraz Finance allow you to borrow USDC, SOL and other crypto assets at 0% interest.</p>
           </div>
       </div>
+      </div>
+
+      <div>
+        <div class="wrapper">
+          <div class="text-container">
+              <div class="row">
+              <div class="column" >
+                <lottie-player class="player" src="/static/lender.json"  background="transparent"  speed="1"  loop autoplay></lottie-player>
+              </div>
+            </div>
+          </div>
+          <div class="paragraph">
+            <div>
+            <h2 style="font-family: Roboto">Lend, to whom you want.</h2>
+            <p id="paragraph">As a creditor bank, you can trust Shiraz DeFi protocols and rock stable algorithmic operations that ensures your money is available to qualified borrowers and in your terms.</p>
+            </div>
+        </div>
+        </div>
+
+
+        <div>
+          <div class="wrapper">
+            <div class="text-container">
+                <div class="row">
+                <div class="column" >
+                  <lottie-player class="player" src="/static/hold.json"  background="transparent"  speed="1"  loop autoplay></lottie-player>
+                </div>
+              </div>
+            </div>
+            <div class="paragraph">
+              <div>
+              <h2 style="font-family: Roboto">Benefits of Holding</h2>
+              <p id="paragraph">Borrowers and Lenders earn Social Token at 1:1 ratio of dollar in flow, while benefiting from other banking gains and rewards set by Lender.</p>
+              </div>
+          </div>
+        </div>
+
+          <div class="wrapper" >
+            <img id="footer-logo" src="/static/logo.png" alt="logo" ></img>
+            <div style="padding-left:40px;">
+              <p id="signature">kia@eiventures.io</p>
+              <a href="https://twitter.com/intent/tweet?screen_name=ShirazFinance&ref_src=twsrc%5Etfw" class="twitter-mention-button" data-show-count="false">Tweet to @ShirazFinance</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+          </div>
+
     </main>
-
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          "name": "Requestion App",
-          "operatingSystem": "IOS",
-          "applicationCategory": "https://schema.org/SocialNetworkingApplication"
-        }
-    </script>
-      <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142590660-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-142590660-1');
-    </script>
-
   </body>
 </html>
