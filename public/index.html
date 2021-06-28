@@ -10,7 +10,7 @@
     <title>Shiraz Finance</title>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, width=device-width, height=device-height">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
@@ -35,12 +35,32 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/start.css">
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="/static/lottie-player.js"></script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+
+    <style>
+      df-messenger {
+       --df-messenger-bot-message: #878fac;
+       --df-messenger-button-titlebar-color: #d5eaf2;
+       --df-messenger-chat-background-color: #fafafa;
+       --df-messenger-font-color: white;
+       --df-messenger-send-icon: #878fac;
+      }
+    </style>
 
   </head>
   <body>
     <header class="header">
       <img id="logo" src="/static/logo.png" alt="logo" ></img>
+
+      <df-messenger
+        chat-title="Shiraz Finance, Getting to Know You"
+        intent="Welcome"
+        agent-id="5b297885-8f32-4ef3-a8f0-06c31d311d56"
+        language-code="en"
+        chat-icon="http://shiraz-finance.web.app/static/icon.png"
+        wait-open="true"
+      ></df-messenger>
 
     </header>
 
