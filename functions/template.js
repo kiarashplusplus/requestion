@@ -1,6 +1,6 @@
 'use strict';
 
-const glob = require("glob");
+const { globSync } = require("glob");
 const fs = require('fs');
 const Handlebars = require('handlebars');
 const _ = require('lodash');
@@ -39,9 +39,14 @@ exports.alternativePages = (stickerType, stickerInput) => {
   let pages;
   switch (stickerType) {
     case 'newsArticle':
-      const files = glob.sync('./templates/'+stickerType+'_*.handlebars'); //["./templates/newsArticle_v2.handlebars"];
-      pages = _.map(files, path => {
-        const source = require(path);
+      // Scope the glob to this module's templates dir (not the process cwd) and
+      // return bare filenames, so the relative require below is stable across
+      // glob versions (glob v9+ no longer preserves a leading "./").
+      const files = globSync(stickerType + '_*.handlebars', {
+        cwd: require('path').join(__dirname, 'templates')
+      });
+      pages = _.map(files, file => {
+        const source = require('./templates/' + file);
         var template = Handlebars.compile(source);
         var data = {
           title: stickerInput.title,

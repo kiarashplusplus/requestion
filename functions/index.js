@@ -1,15 +1,14 @@
 'use strict';
 
 const admin = require('firebase-admin');
-const functions = require('firebase-functions');
+const functions = require('firebase-functions/v1');
 const { generateAlternatives, generateGoogleResults, makeSticker } = require('./makeSticker');
 const { addStickerItem, addStickerImage, overlay, getCache, setCache } = require('./utils');
 const { generateNewsResults, generateLocalHeadlines } = require('./results');
 const { listLocalities, getLocality } = require('./localities');
-const requestIp = require('request-ip');
 const _ = require('lodash');
 
-try {admin.initializeApp(functions.config().firebase);} catch (e) {}
+try {admin.initializeApp();} catch (e) {}
 var db = admin.firestore();
 
 const beefyOpts = { memory: '2GB', timeoutSeconds: 180 };

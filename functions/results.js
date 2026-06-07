@@ -1,7 +1,6 @@
 'use strict';
 
 const https = require('https')
-const functions = require('firebase-functions');
 var _ = require('lodash');
 const {getCache, setCache} = require('./utils');
 const {getLocality} = require('./localities');
@@ -28,9 +27,9 @@ const formatNewsAPI = data =>
 
 const getNewsApi = () => {
   const NewsAPI = require('newsapi');
-  const KEY = functions.config().newsapi.id;
+  const KEY = process.env.NEWSAPI_ID;
   if (!KEY) {
-    throw new Error('Missing the NEWS_API environment variable')
+    throw new Error('Missing the NEWSAPI_ID environment variable')
   }
   return new NewsAPI(KEY);
 };
@@ -81,9 +80,9 @@ exports.generateLocalHeadlines = (locality, fresh = false) => {
 
 // Not used right now. The thumbnail quality is terrible.
 const bingNewsSearch = query => {
-    const KEY = functions.config().azure.id;
+    const KEY = process.env.AZURE_ID;
     if (!KEY) {
-    throw new Error('Missing the AZURE_SUBSCRIPTION_KEY environment variable')
+    throw new Error('Missing the AZURE_ID environment variable')
     }
 
     return getCache('bingNews', query)
