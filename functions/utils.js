@@ -1,11 +1,10 @@
 'use strict';
 
 const admin = require('firebase-admin');
-const functions = require('firebase-functions');
 const cloudinary = require('cloudinary').v2;
 const util = require('util');
 
-try {admin.initializeApp(functions.config().firebase);} catch (e) {}
+try {admin.initializeApp();} catch (e) {}
 var db = admin.firestore();
 
 let cloudinaryUploader;
@@ -40,14 +39,14 @@ exports.addStickerImage = (image, type) =>
 
 const getUploader = () => {
   if (cloudinaryUploader) return cloudinaryUploader;
-  const KEY = functions.config().cloudinary.key;
+  const KEY = process.env.CLOUDINARY_KEY;
   if (!KEY) {
-    throw new Error('Missing the Cloudinary environment variable')
+    throw new Error('Missing the CLOUDINARY_KEY environment variable')
   }
-  cloudinary.config({ 
-    cloud_name: 'kiarash', 
-    api_key: functions.config().cloudinary.key, 
-    api_secret: functions.config().cloudinary.secret
+  cloudinary.config({
+    cloud_name: 'kiarash',
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
   });
   return util.promisify(cloudinary.uploader.upload);
 };

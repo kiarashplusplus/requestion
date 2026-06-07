@@ -27,6 +27,9 @@
     },{
       "source": "/featured",
       "function": "featured"
+    },{
+      "source": "/localities",
+      "function": "localities"
     }],
     "ignore": [
       "firebase.json",
