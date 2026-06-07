@@ -4,7 +4,8 @@ const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const { generateAlternatives, generateGoogleResults, makeSticker } = require('./makeSticker');
 const { addStickerItem, addStickerImage, overlay, getCache, setCache } = require('./utils');
-const { generateNewsResults } = require('./results');
+const { generateNewsResults, generateLocalHeadlines } = require('./results');
+const { listLocalities, getLocality } = require('./localities');
 const requestIp = require('request-ip');
 const _ = require('lodash');
 
@@ -22,22 +23,28 @@ const maxNewsResponseLength = 4;
 exports.query = functions.https.onRequest(async (request, response) => {
   const q = request.query.q;
   const wantsFresh = request.query.fresh ? true : false;
-  console.log(`Endpoint query: ${q}`);
+  // Optional locality id restricts news to that locality's local-news outlets.
+  // Omitting it preserves the original global-search behavior.
+  const locality = request.query.locality;
+  console.log(`Endpoint query: ${q} locality: ${locality}`);
 
   const buildResponse = sections => ({
     query: q,
     sections: sections
   });
-  const cachedSections = await getCache("query", q);
+  // Locality-scoped cache key so different localities never collide for the
+  // same search text.
+  const cacheKey = (locality ? locality + ':' : '') + q;
+  const cachedSections = await getCache("query", cacheKey);
   if (cachedSections && !wantsFresh) {
     response.json(buildResponse(cachedSections))
   }
-  var news = await generateNewsResults(q, wantsFresh);
+  var news = await generateNewsResults(q, wantsFresh, locality);
   news = news.slice(0, maxNewsResponseLength);
   const newsStickers = await Promise.all(news).then(items => Promise.all(items.map(item => addStickerItem(item))));
   const newsSection = {news: {title: "News", data: newsStickers}};
   const sections = _.merge(cachedSections, newsSection);
-  setCache("query", q, sections);
+  setCache("query", cacheKey, sections);
   response.json(buildResponse(sections));
 });
 
@@ -168,19 +175,25 @@ exports.overlay = functions.https.onRequest((req, res) => {
   overlay(stickerId).then(url => res.send(url));
 })
 
-exports.featured = functions.https.onRequest((req, res) => {
-  console.log(req.connection.remoteAddress);
-  const clientIp = requestIp.getClientIp(req); 
-  console.log(clientIp);
-  console.log(req.headers["x-forwarded-for"]);
-  res.json([
-    {
-      "query": "2019 Women's World Cup",
-      "imgWidth": 600,
-      "imgSrc": "https://requestion.app/sticker/?id=fifa",
-      "imgHeight": 338
-    }
-  ]);
+// "Near you": latest local headlines for a locality, returned as ready-to-render
+// sticker items (same shape the app already expects from /query news stickers).
+// Without a (known) locality this returns [] so older clients degrade gracefully.
+exports.featured = functions.https.onRequest(async (req, res) => {
+  const locality = req.query.locality;
+  console.log(`Endpoint featured locality: ${locality}`);
+  if (!getLocality(locality)) {
+    return res.json([]);
+  }
+  const wantsFresh = req.query.fresh ? true : false;
+  let headlines = await generateLocalHeadlines(locality, wantsFresh);
+  headlines = headlines.slice(0, maxNewsResponseLength);
+  const stickers = await Promise.all(headlines.map(item => addStickerItem(item)));
+  res.json(stickers);
+});
+
+// Lists the localities the app offers, for the client's locality picker.
+exports.localities = functions.https.onRequest((req, res) => {
+  res.json(listLocalities());
 });
 
 exports.ping = functions.https.onRequest((req, res) => {
