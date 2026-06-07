@@ -36,7 +36,15 @@ const screenshot = async (pageContent, pageEvaluator=shootPageEvaluator)  => {
   browser = await getBrowser();
   const page = await browser.newPage();
   try {
-    await page.setContent(pageContent);
+    // Render at 2x so stickers are crisp on retina phones (default is 1x/soft).
+    await page.setViewport({ width: 720, height: 1280, deviceScaleFactor: 2 });
+    // Wait for the CDN scripts + news image to load before measuring/capturing.
+    await page.setContent(pageContent, { waitUntil: 'networkidle0', timeout: 30000 });
+    // The card is mounted by in-browser React after Babel transpiles, so wait for
+    // the capture target to exist and for web fonts to settle — never screenshot
+    // a half-rendered card.
+    await page.waitForSelector('#shoot', { timeout: 15000 });
+    await page.evaluate(() => document.fonts && document.fonts.ready);
     const rect = await page.evaluate(pageEvaluator);
     if (!rect) { 
       console.log('pageEvaluator returned null!')
